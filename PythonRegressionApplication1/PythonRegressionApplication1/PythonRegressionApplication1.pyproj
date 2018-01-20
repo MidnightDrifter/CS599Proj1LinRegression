@@ -27,6 +27,13 @@
     </Compile>
     <Compile Include="regression.py" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CSV Data Files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CSV Data Files\Redfin Data Cleaned - Choose Beds-I Bathrooms-J SqFt-L Price-H.csv" />
+    <Content Include="CSV Data Files\Redfin Data Cleaned - Testing Data DO NOT USE TO TRAIN.csv" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
        Visual Studio and specify your pre- and post-build commands in
