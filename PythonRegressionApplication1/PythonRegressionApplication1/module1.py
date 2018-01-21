@@ -28,11 +28,17 @@ testingDataInput.insert(0,'Ones',1)
 
 
 #Turn into matrices here
+trainingDataMatrix = numpy.matrix(trainingDataInput.values)
+trainingDataMatrixTranspose = trainingDataMatrix.transpose
+trainingDataPricesMatrix = numpy.matrix(trainingDataPrices.values)
 
+trainingDataMatrixInv = (trainingDataMatrixTranspose * trainingDataMatrix).inverse
 
 
 #Multiply here
-
+thetaValues = trainingDataMatrixInv * trainingDataMatrixTranspose * trainingDataPricesMatrix
 
 #Graph here
 
+
+#Graph stuff goes here??
