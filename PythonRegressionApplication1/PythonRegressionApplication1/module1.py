@@ -34,11 +34,19 @@ trainingDataPricesMatrix = numpy.matrix(trainingDataPrices.values)
 
 trainingDataMatrixInv = (trainingDataMatrixTranspose * trainingDataMatrix).inverse
 
+testingDataMatrix = numpy.matrix(testingDataInput.values)
+testingDataPricesMatrix = numpy.matrix(testingDataPrices.values)
 
 #Multiply here
 thetaValues = trainingDataMatrixInv * trainingDataMatrixTranspose * trainingDataPricesMatrix
 
 #Graph here
+
+predictedPrices = testingDataMatrix * thetaValues
+
+
+
+
 
 
 #Graph stuff goes here??
