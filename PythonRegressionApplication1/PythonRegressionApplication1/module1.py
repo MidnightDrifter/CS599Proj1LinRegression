@@ -10,12 +10,18 @@ testingDataCSVPath = r'.\CSV Data Files\Redfin Data Cleaned - Testing Data DO NO
 colsToReadData = [9,10,12]
 colToReadPrice = [8]
 
+colsToSqFtVsData = [8,12]
+
+#Price column: 8
+
 #Training & testing data
 trainingDataInput = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath, usecols=colsToReadData))
 trainingDataPrices = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath,usecols=colToReadPrice))
 
 testingDataInput = pandas.DataFrame(pandas.read_csv(testingDataCSVPath,usecols=colsToReadData))
 testingDataPrices = pandas.DataFrame(pandas.read_csv(testingDataCSVPath,usecols=colToReadPrice))
+
+testingPricesVsSqFt = pandas.DataFrame(pandas.read_csv(testingDataCSVPath, usecols=colsToSqFtVsData))
 
 #Size of data
 trainingDataLength = len(trainingDataInput[0])
@@ -46,6 +52,12 @@ predictedPrices = testingDataMatrix * thetaValues
 
 
 
+matplotlib.pyplot.plot(predictedPrices,predictedPrices)
+matplotlib.pyplot.plot(numpy.matrix(testingPricesVsSqFt.values))
+
+matplotlib.pyplot.xlabel("Prices")
+matplotlib.pyplot.ylabel("Sq. Ft.")
+matplotlib.pyplot.show()
 
 
 
