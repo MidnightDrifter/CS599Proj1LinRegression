@@ -10,6 +10,7 @@ testingDataCSVPath = "CSV Data Files\Redfin Data Cleaned - Testing Data DO NOT U
 
 #Columns of data to read in
 #Starts from 0 I believe
+#7 = price, 8 = # beds, 9 = # baths, 11 = sq ft
 colsToReadData = [8,9,11]
 colToReadPrice = [7]
 
@@ -53,7 +54,18 @@ trainingDataMatrix =numpy.matrix(trainingDataInput.values)
 trainingDataMatrixTranspose = numpy.matrix(trainingDataMatrix.transpose())
 trainingDataPricesMatrix = numpy.matrix(trainingDataPrices.values)
 
-trainingDataMatrixInv = numpy.linalg.inv(numpy.matrix((trainingDataMatrixTranspose.dot( trainingDataMatrix))))
+print(trainingDataMatrix)
+print(trainingDataMatrixTranspose)
+
+
+
+testMatrix = trainingDataMatrixTranspose.dot( trainingDataMatrix);
+
+
+
+
+
+trainingDataMatrixInv = numpy.linalg.inv((trainingDataMatrixTranspose.dot(trainingDataMatrix)))
 
 testingDataMatrix = numpy.matrix(testingDataInput.values)
 testingDataPricesMatrix = numpy.matrix(testingDataPrices.values)
@@ -66,12 +78,15 @@ thetaValues = trainingDataMatrixInv * trainingDataMatrixTranspose * trainingData
 predictedPrices = testingDataMatrix * thetaValues
 
 
+testingPricesVsSqFtNumpy = numpy.matrix(testingPricesVsSqFt)
 
-plt.plot(predictedPrices,predictedPrices)
-plt.plot(numpy.matrix(testingPricesVsSqFt.values))
+plt.plot(predictedPrices, predictedPrices,'go',linestyle='dashed')
 
-plt.xlabel("Prices")
-plt.ylabel("Sq. Ft.")
+#plt.scatter(testingPricesVsSqFt,testingPricesVsSqFt, )
+
+plt.plot(testingPricesVsSqFt,testingPricesVsSqFt,'ro')
+plt.ylabel("Prices")
+plt.xlabel("Sq. Ft.")
 plt.show()
 
 
