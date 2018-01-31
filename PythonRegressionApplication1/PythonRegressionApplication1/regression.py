@@ -8,6 +8,11 @@ import pandas
 trainingDataCSVPath = "CSV Data Files\Redfin Data Cleaned - Choose Beds-I Bathrooms-J SqFt-L Price-H.csv"
 testingDataCSVPath = "CSV Data Files\Redfin Data Cleaned - Testing Data DO NOT USE TO TRAIN.csv"
 
+#trainingDataCSVPath = "CSV Data Files\Redfin Data Cleaned - Testing Data DO NOT USE TO TRAIN.csv"
+#testingDataCSVPath = "CSV Data Files\Redfin Data Cleaned - Choose Beds-I Bathrooms-J SqFt-L Price-H.csv"
+
+dataPath = "CSV Data Files\Redfin Data Full.csv"
+
 #Columns of data to read in
 #Starts from 0 I believe
 #7 = price, 8 = # beds, 9 = # baths, 11 = sq ft
@@ -24,6 +29,11 @@ colsToSqFtVsData = [7,11]
 #Training & testing data
 trainingDataInput = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath, usecols=colsToReadData))
 trainingDataPrices = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath,usecols=colToReadPrice))
+
+
+#trainingDataInput = pandas.DataFrame(pandas.read_csv(dataPath, usecols=colsToReadData))
+#trainingDataPrices = pandas.DataFrame(pandas.read_csv(dataPath,usecols=colToReadPrice))
+
 
 testingDataInput = pandas.DataFrame(pandas.read_csv(testingDataCSVPath,usecols=colsToReadData))
 testingDataPrices = pandas.DataFrame(pandas.read_csv(testingDataCSVPath,usecols=colToReadPrice))
@@ -42,30 +52,45 @@ if(trainingDataLength == 0 or testingDataLength ==0):
 
 
 
+#trainingDataInput.iloc[3] /1000   #Scale sqft down?
+#testingPricesVsSqFt.iloc[1] / 1000 
+
 
 #Append all 1's column to left
 trainingDataInput.insert(0, 'Ones', 1)
 testingDataInput.insert(0,'Ones',1)
 
-
+#print(trainingDataInput)
 
 #Turn into matrices here
 trainingDataMatrix =numpy.matrix(trainingDataInput.values)
+
+#print(trainingDataMatrix)
+
 trainingDataMatrixTranspose = numpy.matrix(trainingDataMatrix.transpose())
+
+
+#print(trainingDataMatrixTranspose)
+
 trainingDataPricesMatrix = numpy.matrix(trainingDataPrices.values)
 
-print(trainingDataMatrix)
-print(trainingDataMatrixTranspose)
+#print(trainingDataMatrix)
+#print(trainingDataMatrixTranspose)
 
 
 
-testMatrix = trainingDataMatrixTranspose.dot( trainingDataMatrix);
+testMatrix = trainingDataMatrixTranspose *( trainingDataMatrix);
+
+#print(testMatrix)
 
 
 
 
 
-trainingDataMatrixInv = numpy.linalg.inv((trainingDataMatrixTranspose.dot(trainingDataMatrix)))
+trainingDataMatrixInv = numpy.linalg.inv(testMatrix)
+
+#print(trainingDataMatrixInv)
+
 
 testingDataMatrix = numpy.matrix(testingDataInput.values)
 testingDataPricesMatrix = numpy.matrix(testingDataPrices.values)
@@ -73,20 +98,35 @@ testingDataPricesMatrix = numpy.matrix(testingDataPrices.values)
 #Multiply here
 thetaValues = trainingDataMatrixInv * trainingDataMatrixTranspose * trainingDataPricesMatrix
 
+
+
+print(thetaValues)
+
+#thetaValusNumpy = numpy.matrix(thetaValues.values)
+
 #Graph here
 
-predictedPrices = testingDataMatrix * thetaValues
+#Test with:  2 beds, 2 baths, 5000sq.ft.
+testPrices = numpy.matrix([1,2,2,1000])
+
+predictedPrices = testingDataMatrix * thetaValues  #testPrices * thetaValues  
 
 
-testingPricesVsSqFtNumpy = numpy.matrix(testingPricesVsSqFt)
+testingPricesVsSqFtNumpy = numpy.matrix(testingPricesVsSqFt.values)
 
-plt.plot(predictedPrices, predictedPrices,'go',linestyle='dashed')
+
+
+plt.plot(predictedPrices, testingDataInput['SQUARE FEET'])
 
 #plt.scatter(testingPricesVsSqFt,testingPricesVsSqFt, )
 
-plt.plot(testingPricesVsSqFt,testingPricesVsSqFt,'ro')
-plt.ylabel("Prices")
-plt.xlabel("Sq. Ft.")
+plt.plot(testingPricesVsSqFt['PRICE'], testingPricesVsSqFt['SQUARE FEET'],'ro')
+
+
+plt.ylabel("Sq. Ft.")
+plt.xlabel("Prices")
+#plt.xlim(0,8000)
+plt.ylim(0,8000)
 plt.show()
 
 
