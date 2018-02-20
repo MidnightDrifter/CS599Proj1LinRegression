@@ -29,10 +29,24 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CSV Data Files\" />
+    <Folder Include="Proj 3 Spam-Ham Data\" />
+    <Folder Include="Proj 3 Spam-Ham Data\preprocdata\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="CSV Data Files\Redfin Data Cleaned - Choose Beds-I Bathrooms-J SqFt-L Price-H.csv" />
     <Content Include="CSV Data Files\Redfin Data Cleaned - Testing Data DO NOT USE TO TRAIN.csv" />
+    <Content Include="PRJ 2 CS 599.pdf" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\spmsga1.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\test-features.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\test-labels.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-features-100.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-features-400.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-features-50.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-features.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-labels-100.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-labels-400.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-labels-50.txt" />
+    <Content Include="Proj 3 Spam-Ham Data\preprocdata\train-labels.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
