@@ -116,12 +116,12 @@ testingPricesVsSqFtNumpy = numpy.matrix(testingPricesVsSqFt.values)
 
 
 
-plt.plot(predictedPrices, testingDataInput['SQUARE FEET'])
 
 #plt.scatter(testingPricesVsSqFt,testingPricesVsSqFt, )
 
 plt.plot(testingPricesVsSqFt['PRICE'], testingPricesVsSqFt['SQUARE FEET'],'ro')
 
+plt.plot(predictedPrices, testingDataInput['SQUARE FEET'])
 
 plt.ylabel("Sq. Ft.")
 plt.xlabel("Prices")
