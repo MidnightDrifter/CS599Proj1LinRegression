@@ -83,3 +83,21 @@ for index, row in trainingDataInput.itertuples():
 #            testingDataSpamDictionary[row[1]] = row[2]
 #        else:
 #            testingDataSpamDictionary[row[1]] += row[2]
+
+
+#for each row in the testing data:
+    #read e-mail #
+    #if it's a new email, reset currProb to 1 after classifying old e-mail and comparing--use a 50-50 threshold.  >=50% spam, <=50% ham
+        #Classify based on 50-50 threshold, update hit-miss counts based on correct/incorrect classification
+        #reset currProb to 1
+
+
+    #else, multiply & update probability based on iterative method--see notes for exact details
+        #for each word wI in email
+        #currProb *= P(spam | wI) =    ( P(spam) P(wI  | spam)    /   (   P(spam) P(wI | spam) +  P(ham) P(wI | ham)   )
+        #This can be reduced, check notes, but for now:
+            #   Laplace smoothing goes here!
+            #   P(spam) =  (# spam emails ) +1  / (total # emails) +2
+            #   P(ham) = 1- P(spam)
+            #   P(wI | spam) =  (# occurrences of word in spam emails) +1 / (total # of occurrences of word, spam + ham) +2
+            #  And similarly for P(wI | ham)
