@@ -98,6 +98,8 @@ def probHamGivenWord(word =""):
 
 
 
+
+
 #for index, row in testingDataInput.itertuples():
 #    if(row[3] ==0):
 #        if(row[1] not in testingDataHamDictionary):
