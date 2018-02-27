@@ -79,17 +79,18 @@ pSpam = float(totalWordsSpam / (totalWordsSpam + totalWordsHam))
 pHam = 1.0 - pHam
 
 
-def probSpamGivenWord( word="" ):
-    if (word == ""):
+def probSpamGivenWord( word=-1, numOccurrences=0 ):
+    if (word == -1):
         return 1.0
     else:
-        return (trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )
+        return pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
 
-def probHamGivenWord(word =""):
-    if (word == ""):
+def probHamGivenWord(word =-1, numOccurrences=0):
+    if (word == -1):
         return 1.0
     else:
-        return (trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )
+        return pow((count + trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
+
 
 
 
@@ -117,7 +118,7 @@ def probHamGivenWord(word =""):
     #read e-mail #
     #if it's a new email, reset currProb to 1 after classifying old e-mail and comparing--use a 50-50 threshold.  >=50% spam, <=50% ham
         #Classify based on 50-50 threshold, update hit-miss counts based on correct/incorrect classification
-        #reset currProb to 1
+        #reset currProb to 1 -- or maybe 1/2, see what works better
 
 
     #else, multiply & update probability based on iterative method--see notes for exact details
@@ -129,3 +130,42 @@ def probHamGivenWord(word =""):
             #   P(ham) = 1- P(spam)
             #   P(wI | spam) =  (# occurrences of word in spam emails) +1 / (total # of occurrences of word, spam + ham) +2
             #  And similarly for P(wI | ham)
+
+
+
+currRowProb = 0
+currMessageNum = -1
+hitCounter =0
+missCounter =0
+
+file = open("Test Output.txt", "w")
+file.write("Classifications - Message #,  Probability Calculated, Classification, Actual\n")
+
+
+
+
+for index, row in testingDataInput.itertuples():
+    if(currMessageNum != row[0]):
+        temp=1
+        
+        if(currRowProb <=0.5):
+            temp=0
+        file.write(currMessageNum, currRowProb, temp, row[3])
+        file.write("\n")
+        currRowProb=1
+        currMessageNum = row[0]
+        
+        if(temp == row[3]):
+            hitCoumter += 1
+        else:
+            missCounter += 1
+    
+    else:
+        currProb *= probSpamGivenWord(row[1], row[2]) / (probSpamGivenWord(row[1],row[2]) + probHamGivenWord(row[1],row[2]))
+
+
+file.write("Successful classification ratio:  " + float(hitCounter)/numTestingEmails + "\n")
+file.write("Incorrect classification ratio:  " + float(missCounter)/numTestingEmails + "\n")
+
+
+file.close()    
