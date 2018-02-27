@@ -79,20 +79,6 @@ pSpam = float(totalWordsSpam / (totalWordsSpam + totalWordsHam))
 pHam = 1.0 - pHam
 
 
-def probSpamGivenWord( word=-1, numOccurrences=0 ):
-    if (word == -1):
-        return 1.0
-    else:
-        return pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
-
-def probHamGivenWord(word =-1, numOccurrences=0):
-    if (word == -1):
-        return 1.0
-    else:
-        return pow((count + trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
-
-
-
 
 
 
@@ -133,7 +119,24 @@ def probHamGivenWord(word =-1, numOccurrences=0):
 
 
 
-currRowProb = 0
+def probSpamGivenWord( word=-1, numOccurrences=0 ):
+    if (word == -1):
+        return 1.0
+    else:
+        return pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
+
+def probHamGivenWord(word =-1, numOccurrences=0):
+    if (word == -1):
+        return 1.0
+    else:
+        return pow(( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
+
+
+
+
+
+
+currRowProb = 1
 currMessageNum = -1
 hitCounter =0
 missCounter =0
