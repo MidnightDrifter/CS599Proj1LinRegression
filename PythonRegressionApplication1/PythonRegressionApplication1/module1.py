@@ -49,27 +49,53 @@ numTestingEmails = testingDataInput["Message #"].max()
 
 trainingDataSpamDictionary = {}
 trainingDataHamDictionary = {}
-testingDataSpamDictionary = {}
-testingDataHamDictionary = {}
+#testingDataSpamDictionary = {}
+#testingDataHamDictionary = {}
 
 
 #Kinda cheat-y, but know that:  A. training data has 400 emails & B. testing data has 260
 
 
 
-
+totalWordsSpam = 0
+totalWordsHam=0
 
 for index, row in trainingDataInput.itertuples():
     if(row[3] ==0):
+        totalWordsHam += row[2]
         if(row[1] not in trainingDataHamDictionary):
             trainingDataHamDictionary[row[1]] = row[2]
         else:
             trainingDataHamDictionary[row[1]] += row[2]
     else:
+        totalWordsSpam += row[2]
         if(row[1] not in trainingDataSpamDictionary):
             trainingDataSpamDictionary[row[1]] = row[2]
         else:
             trainingDataSpamDictionary[row[1]] += row[2]
+
+
+pSpam = float(totalWordsSpam / (totalWordsSpam + totalWordsHam))
+pHam = 1.0 - pHam
+
+
+def probSpamGivenWord( word="" ):
+    if (word == ""):
+        return 1.0
+    else:
+        return (trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )
+
+def probHamGivenWord(word =""):
+    if (word == ""):
+        return 1.0
+    else:
+        return (trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )
+
+
+
+
+
+
 
 
 #for index, row in testingDataInput.itertuples():
