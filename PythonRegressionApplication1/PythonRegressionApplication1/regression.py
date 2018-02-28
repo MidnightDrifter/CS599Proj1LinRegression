@@ -4,7 +4,9 @@ import pandas
 import csv
 
 #Filepaths for data files
-trainingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/train-features-400.csv"
+trainingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/"
+pathEnd = "train-features.csv"
+trainingDataCSVPath += pathEnd
 testingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/test-features.csv"
 
 #Data format:
@@ -81,11 +83,11 @@ pHam = float (totalWordsHam / (totalWordsHam + totalWordsSpam))
 
 
 
-spamDict = csv.writer(open("SpamDictionary.csv", 'w'))
+spamDict = csv.writer(open("SpamDictionary" + pathEnd +".csv", 'w'))
 for key, val in trainingDataSpamDictionary.items():
     spamDict.writerow([key, val])
 
-hamDict = csv.writer(open("HamDictionary.csv", 'w'))
+hamDict = csv.writer(open("HamDictionary" + pathEnd + ".csv", 'w'))
 for key, val in trainingDataHamDictionary.items():
     hamDict.writerow([key, val])
 
@@ -151,7 +153,7 @@ currMessageNum = -1
 hitCounter =0
 missCounter =0
 
-file = open("Test Output.txt", "w")
+file = open("Test Output "+ pathEnd + ".txt", "w")
 file.write("Classifications - Message #,  Probability Calculated, Classification, Actual\n")
 
 
