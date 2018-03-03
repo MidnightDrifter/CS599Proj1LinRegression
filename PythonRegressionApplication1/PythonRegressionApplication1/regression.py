@@ -6,6 +6,8 @@ import csv
 #Filepaths for data files
 trainingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/"
 pathEnd = "train-features.csv"
+EPSILON = 0.01
+epsilonString = " Epsilon Val" + str(EPSILON)
 trainingDataCSVPath += pathEnd
 testingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/test-features.csv"
 
@@ -78,16 +80,16 @@ for index, row in trainingDataInput.iterrows():
             trainingDataSpamDictionary[row[1]] += row[2]
 
 
-pSpam = float(totalWordsSpam / (totalWordsSpam + totalWordsHam))
-pHam = float (totalWordsHam / (totalWordsHam + totalWordsSpam))
+pSpam = numpy.double(totalWordsSpam / (totalWordsSpam + totalWordsHam))
+pHam = numpy.double (totalWordsHam / (totalWordsHam + totalWordsSpam))
 
 
 
-spamDict = csv.writer(open("SpamDictionary" + pathEnd +".csv", 'w'))
+spamDict = csv.writer(open("SpamDictionary " + pathEnd +".csv", 'w'))
 for key, val in trainingDataSpamDictionary.items():
     spamDict.writerow([key, val])
 
-hamDict = csv.writer(open("HamDictionary" + pathEnd + ".csv", 'w'))
+hamDict = csv.writer(open("HamDictionary " + pathEnd + ".csv", 'w'))
 for key, val in trainingDataHamDictionary.items():
     hamDict.writerow([key, val])
 
@@ -128,32 +130,40 @@ for key, val in trainingDataHamDictionary.items():
 
 
 def probSpamGivenWord( word=-1, numOccurrences=0 ):
-    if (word == -1):
+    if (word == -1 or numOccurrences == 0): #  or word not in trainingDataSpamDictionary):
         return 1.0
     else:
-         return ( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )  * numOccurrences
+ #        return numpy.double( trainingDataSpamDictionary.get(word,0) +1) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) +2 )#  * numOccurrences
 
-#        return pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
+         out = numpy.double(pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences))
+         if(out < EPSILON):
+             return 1.0
+         return out
 
 
 def probHamGivenWord(word =-1, numOccurrences=0):
-    if (word == -1):
+    if (word == -1 or numOccurrences == 0):  # or word not in trainingDataHamDictionary):
         return 1.0
     else:
-#        return pow(( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
-         return ( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )  * numOccurrences
+        out = numpy.double(pow(( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences))
+#         return numpy.double( trainingDataHamDictionary.get(word,0) ) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0)  )  * numOccurrences
+        if(out < EPSILON):
+            out =1
+        return out
 
 
 
 
 
-
-currRowProb = 0.5
+currRowProb = 1
+currRowSpamProb = pSpam
+currRowHamProb = pHam
+#outProb = 1
 currMessageNum = -1
 hitCounter =0
 missCounter =0
 
-file = open("Test Output "+ pathEnd + ".txt", "w")
+file = open("Test Output "+ pathEnd +  epsilonString+ ".txt", "w")
 file.write("Classifications - Message #,  Probability Calculated, Classification, Actual\n")
 
 
@@ -162,11 +172,13 @@ file.write("Classifications - Message #,  Probability Calculated, Classification
 for index, row in testingDataInput.iterrows():
     if(currMessageNum != row[0]):
         temp=1
-        
-        if(currRowProb <=0.5):
+        currRowProb = (currRowSpamProb) / (currRowSpamProb + currRowHamProb)
+        if(currRowProb <=0.7):
             temp=0
         file.write(str(currMessageNum)+ ", " +  str(currRowProb) +", " + str(temp) +", " +  str(row[3]) + "\n")
-        currRowProb=0.5
+        currRowProb=1
+        currRowHamProb = pHam
+        currRowSpamProb = pSpam
         currMessageNum = row[0]
         
         if(temp == row[3]):
@@ -175,11 +187,15 @@ for index, row in testingDataInput.iterrows():
             missCounter += 1
     
     else:
-        currRowProb *= ( probSpamGivenWord(row[1], row[2])) / ( probSpamGivenWord(row[1],row[2]) +  probHamGivenWord(row[1],row[2]))
+        currRowSpamProb *= probSpamGivenWord(row[1],row[2])
+        currRowHamProb *= probHamGivenWord(row[1],row[2])
+#        p1 = probSpamGivenWord(row[1],row[2])
+#        p2 = probHamGivenWord(row[1],row[2])
+#        if(not (p1 ==1 and p2 ==1)):
+#            currRowProb *= p1/(p1+p2)
 
-
-file.write("Successful classification ratio:  " + str(float(hitCounter)/numTestingEmails) + "\n")
-file.write("Incorrect classification ratio:  " + str(float(missCounter)/numTestingEmails) + "\n")
+file.write("Successful classification ratio:  " + str(numpy.double(hitCounter)/numTestingEmails) + "\n")
+file.write("Incorrect classification ratio:  " + str(numpy.double(missCounter)/numTestingEmails) + "\n")
 
 
 file.close()    
