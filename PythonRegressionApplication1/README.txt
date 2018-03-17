@@ -6,3 +6,8 @@ Sean Higgins
 CS 599
 1-31-2018
 Prof. Bede
+
+
+
+Proj 2 - Naive Bayes
+Success!  It all works--the only tweak I made was changing the spam-ham threshold to 0.7.
