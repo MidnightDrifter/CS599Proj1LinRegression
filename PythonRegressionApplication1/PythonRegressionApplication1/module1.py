@@ -1,6 +1,7 @@
 import numpy
 import matplotlib
 import pandas
+import random
 
 #Filepaths for data files
 trainingDataCSVPath = "Proj4-Iris-Data\iris-data-2-types.csv"
@@ -22,9 +23,9 @@ trainingDataCSVPath = "Proj4-Iris-Data\iris-data-2-types.csv"
 
 
 colsForData = [0,1,2,3]   #Sepal Length, Sepal Width, Petal Length, Petal Width
-colsForClassification[4]
+colsForClassification[5]
 
-columnNames = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width", "Classification"]
+columnNames = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width", "Classification", "Classification Num"]
 
 #For future reference:  dataframe.shape()   gives a tuple with dimensionality of the dataframe:  (# rows, # cols)
 
@@ -61,7 +62,9 @@ UPPER_LIMIT_C = 5.0
 initialB = 1.0
 initialAlphaValue = 1.5
 W_VAL
-B_VAL
+B_VAL = 0.0
+
+MAX_LOOPS = 1000
 
 #use len-1 because, presumably, the header row is included in the length
 alphaVector = [initialAlphaValue] * (trainingDatalength-1)   
@@ -72,13 +75,13 @@ def getX(inIndex):
     return trainingDataInput.iloc[[inIndex],[0,1,2,3]]
 
 def getY(inIndex):
-    return trainingDataInput.ilox[[inIndex],4]
+    return trainingDataInput.ilox[[inIndex],5]
 
 
 def UpdateWVal():
     sum =0
     for rows, index in trainingDataInput.iterrows():
-        sum += rows[0,1,2,3].transpose() * rows[4] *alphaVector[index]
+        sum += rows[0,1,2,3].transpose() * rows[5] *alphaVector[index]
     return sum
 
 
@@ -117,9 +120,46 @@ def UpdateAlphaJ(indexI, indexJ):
     else:
         return alphaJNew
 
-#Assumes that I'll instantly insert alphaJNew into the alphaVector after updating it
-def UpdateAlphaI(indexI, indexJ, alphaJOld):
-    return alphaVector[indexI] + (alphaJOld - alphaVector[indexJ])*(getY(indexI)*getY(indexJ))
+#Need to pass and use both new and old alphaJ, alphaI values to update b, so need to pass in both as floats
+def UpdateAlphaI(indexI, indexJ,  alphaJNew):
+    return alphaVector[indexI] + (alphaVector[indexJ]-alphaJNew)*(getY(indexI)*getY(indexJ))
+
+
+def UpdateB(indexI, indexJ, alphaINew, alphaJNew, oldB):
+    b1 = oldB - Efunc(indexI) - (getY(indexI) *   (  alphaINew - alphaVector[indexI]  )*(  getX(indexI).transpose() * getX(indexI)  )  )   - (  getY(indexJ) * (  alphaJNew - alphaVector[indexJ])*(  getX(indexI).transpose() * getX(indexJ)  )  )
+    b2 = oldB - Efunc(indexJ) - (getY(indexI) *   (  alphaINew - alphaVector[indexI]  )*(  getX(indexI).transpose() * getX(indexJ)  )  )   - (  getY(indexJ) * (  alphaJNew - alphaVector[indexJ])*(  getX(indexJ).transpose() * getX(indexJ)  )  )
+    
+    if(alphaINew > 0 and alphaINew < UPPER_LIMIT_C):
+        return b1
+    elif(alphaJNew >0 and alphaJNew < UPPER_LIMIT_C):
+        return b2
+    else:
+        return (b1+b2)/2.0
 
 
 
+
+
+#main loop
+
+for counter in range(0,MAX_LOOPS):
+
+    W_VAL = UpdateWVal()
+
+    i = random.randint(0,trainingDataLength-1)
+    j = random.randint(0,trainingDataLength-1)
+    while(i==j):
+        j=random.randint(0,trainingDataLength-1)
+
+    alphaJNew = UpdateAlphaJ(i,j)
+    alphaINew = UpdateAlphaI(i,j,alphaJNew)
+    B_VAL = UpdateB(i,j,alphaINew,alphaJNew,B_VAL)
+
+    alphaVector[i] = alphaINew
+    alphaVector[j] = alphaJNew
+
+
+
+
+
+#graph stuff goes here
