@@ -166,6 +166,28 @@ end = time.time()
 
 
 
+averages = {0,0,0,0}
+for rows, index in trainingDataInput.iterrows():
+    for i in range(0,4):
+        averages[i] += rows[i]
+
+
+for i in range(0,4):
+    averages[i] /= trainingDataLength
+
+
+xAxis =0
+yAxis=1
+
+matplotlib.pyplot.xlabel(columnNames[xAxis])
+matplotlib.pyplot.ylabel(columnNames[yAxis])
+
+
+matplotlib.pyplot.plot(trainingDataInput[columnNames[xAxis]], trainingDataInput[columnNames[yAxis]])
+
+#Make line based off of testing data, draw that line?
+
+
 
 
 #graph stuff goes here
