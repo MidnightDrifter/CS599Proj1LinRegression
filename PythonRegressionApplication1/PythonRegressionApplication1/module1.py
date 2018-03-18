@@ -2,6 +2,8 @@ import numpy
 import matplotlib
 import pandas
 import random
+import time
+
 
 #Filepaths for data files
 trainingDataCSVPath = "Proj4-Iris-Data\iris-data-2-types.csv"
@@ -141,6 +143,8 @@ def UpdateB(indexI, indexJ, alphaINew, alphaJNew, oldB):
 
 
 #main loop
+print("Loop start.\n")
+start = time.time()
 
 for counter in range(0,MAX_LOOPS):
 
@@ -157,6 +161,8 @@ for counter in range(0,MAX_LOOPS):
 
     alphaVector[i] = alphaINew
     alphaVector[j] = alphaJNew
+
+end = time.time()
 
 
 
