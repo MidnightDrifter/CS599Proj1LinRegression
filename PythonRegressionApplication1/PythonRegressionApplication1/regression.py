@@ -1,13 +1,14 @@
 import numpy
 import matplotlib
+import matplotlib.pyplot as plt
 import pandas
-import csv
+import random
+import time
+
 
 #Filepaths for data files
-trainingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/"
-pathEnd = "train-features.csv"
-trainingDataCSVPath += pathEnd
-testingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/test-features.csv"
+trainingDataCSVPath = "Proj4-Iris-Data\iris-data-2-types-no-strings.csv"
+#testingDataCSVPath = "Proj 3 Spam-Ham Data\preprocdata\test-features.csv"
 
 #Data format:
 # Message #, Word Counter in Dictionary, # of Occurrences of Word, Spam/Ham (1=spam)
@@ -24,162 +25,182 @@ testingDataCSVPath = "Proj 3 Spam-Ham Data/preprocdata/test-features.csv"
 #Price column: 8
 
 
+colsForData = [0,1,2,3]   #Sepal Length, Sepal Width, Petal Length, Petal Width
+colsForClassification = [5]
+
+columnNames = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width", "Classification Num" ,"Classification"]
+
 #For future reference:  dataframe.shape()   gives a tuple with dimensionality of the dataframe:  (# rows, # cols)
 
 #Training & testing data
+
+#Training data block
+
 trainingDataInput = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath))
 #trainingDataPrices = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath,usecols=colToReadPrice))
 
-testingDataInput = pandas.DataFrame(pandas.read_csv(testingDataCSVPath))
+
+#Testing data block
+
+#testingDataInput = pandas.DataFrame(pandas.read_csv(testingDataCSVPath))
 #testingDataPrices = pandas.DataFrame(pandas.read_csv(testingDataCSVPath,usecols=colToReadPrice))
 
 #testingPricesVsSqFt = pandas.DataFrame(pandas.read_csv(testingDataCSVPath, usecols=colsToSqFtVsData))
 
 #Size of data
 trainingDataLength = 0
-testingDataLength = 0
+#testingDataLength = 0
 
 trainingDataLength = len(trainingDataInput.index)
-testingDataLength = len(testingDataInput.index)
+#testingDataLength = len(testingDataInput.index)
 
-if(trainingDataLength == 0 or testingDataLength ==0):
-    print("Something has gone wrong.")
-
-
-numTrainingEmails = trainingDataInput["Message #"].max()
-numTestingEmails = testingDataInput["Message #"].max()
-
-
-trainingDataSpamDictionary = {}
-trainingDataHamDictionary = {}
-#testingDataSpamDictionary = {}
-#testingDataHamDictionary = {}
-
-
-#Kinda cheat-y, but know that:  A. training data has 400 emails & B. testing data has 260
+#if(trainingDataLength == 0 or testingDataLength ==0):
+#    print("Something has gone wrong.")
 
 
 
-totalWordsSpam = 0
-totalWordsHam=0
+#Parameters I Choose
 
-for index, row in trainingDataInput.iterrows():
-    if(row[3] ==0):
-        totalWordsHam += row[2]
-        if(row[1] not in trainingDataHamDictionary):
-            trainingDataHamDictionary[row[1]] = row[2]
-        else:
-            trainingDataHamDictionary[row[1]] += row[2]
-    else:
-        totalWordsSpam += row[2]
-        if(row[1] not in trainingDataSpamDictionary):
-            trainingDataSpamDictionary[row[1]] = row[2]
-        else:
-            trainingDataSpamDictionary[row[1]] += row[2]
+UPPER_LIMIT_C = 5.0
+initialB = 1.0
+initialAlphaValue = 1.5
+W_VAL = pandas.DataFrame(trainingDataInput.iloc[[1],[0,1,2,3]]).values   #Slicing [startIndex : endIndex (not-included) : increment amount (default to 1) ]
+W_VAL = W_VAL - W_VAL
+B_VAL = 0.0
 
+MAX_LOOPS = 1000
 
-pSpam = float(totalWordsSpam / (totalWordsSpam + totalWordsHam))
-pHam = float (totalWordsHam / (totalWordsHam + totalWordsSpam))
+#use len-1 because, presumably, the header row is included in the length
+alphaVector = [initialAlphaValue] * (trainingDataLength)   
 
 
 
-spamDict = csv.writer(open("SpamDictionary" + pathEnd +".csv", 'w'))
-for key, val in trainingDataSpamDictionary.items():
-    spamDict.writerow([key, val])
+def getX(inIndex):
+    return (trainingDataInput.iloc[[inIndex],[0,1,2,3]]).values
 
-hamDict = csv.writer(open("HamDictionary" + pathEnd + ".csv", 'w'))
-for key, val in trainingDataHamDictionary.items():
-    hamDict.writerow([key, val])
-
-
+def getXArray(inIndex):
+    return numpy.squeeze((trainingDataInput.iloc[[inIndex],[0,1,2,3]]).values)
+def getY(inIndex):
+    return (trainingDataInput.iloc[[inIndex],4]).values
 
 
-
-#for index, row in testingDataInput.itertuples():
-#    if(row[3] ==0):
-#        if(row[1] not in testingDataHamDictionary):
-#            testingDataHamDictionary[row[1]] = row[2]
-#        else:
-#            testingDataHamDictionary[row[1]] += row[2]
-#    else:
-#        if(row[1] not in testingDataSpamDictionary):
-#            testingDataSpamDictionary[row[1]] = row[2]
-#        else:
-#            testingDataSpamDictionary[row[1]] += row[2]
-
-
-#for each row in the testing data:
-    #read e-mail #
-    #if it's a new email, reset currProb to 1 after classifying old e-mail and comparing--use a 50-50 threshold.  >=50% spam, <=50% ham
-        #Classify based on 50-50 threshold, update hit-miss counts based on correct/incorrect classification
-        #reset currProb to 1 -- or maybe 1/2, see what works better
-
-
-    #else, multiply & update probability based on iterative method--see notes for exact details
-        #for each word wI in email
-        #currProb *= P(spam | wI) =    ( P(spam) P(wI  | spam)    /   (   P(spam) P(wI | spam) +  P(ham) P(wI | ham)   )
-        #This can be reduced, check notes, but for now:
-            #   Laplace smoothing goes here!
-            #   P(spam) =  (# spam emails ) +1  / (total # emails) +2
-            #   P(ham) = 1- P(spam)
-            #   P(wI | spam) =  (# occurrences of word in spam emails) +1 / (total # of occurrences of word, spam + ham) +2
-            #  And similarly for P(wI | ham)
-
-
-
-def probSpamGivenWord( word=-1, numOccurrences=0 ):
-    if (word == -1):
-        return 1.0
-    else:
-         return ( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )  * numOccurrences
-
-#        return pow(( trainingDataSpamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
-
-
-def probHamGivenWord(word =-1, numOccurrences=0):
-    if (word == -1):
-        return 1.0
-    else:
-#        return pow(( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 ), numOccurrences)
-         return ( trainingDataHamDictionary.get(word,0) +1.0) / (trainingDataSpamDictionary.get(word,0) + trainingDataHamDictionary.get(word,0) + 2 )  * numOccurrences
-
-
-
-
-
-
-currRowProb = 0.5
-currMessageNum = -1
-hitCounter =0
-missCounter =0
-
-file = open("Test Output "+ pathEnd + ".txt", "w")
-file.write("Classifications - Message #,  Probability Calculated, Classification, Actual\n")
-
-
-
-
-for index, row in testingDataInput.iterrows():
-    if(currMessageNum != row[0]):
-        temp=1
-        
-        if(currRowProb <=0.5):
-            temp=0
-        file.write(str(currMessageNum)+ ", " +  str(currRowProb) +", " + str(temp) +", " +  str(row[3]) + "\n")
-        currRowProb=0.5
-        currMessageNum = row[0]
-        
-        if(temp == row[3]):
-            hitCounter += 1
-        else:
-            missCounter += 1
+def UpdateWVal():
+    sum = W_VAL
     
+    sum = sum - sum
+
+
+    for rows, index in trainingDataInput.iterrows():
+        if(rows >0):
+            #temp = index[0:4].values.T
+            #temp = index[4]
+            sum =  sum +(  index[4] *alphaVector[rows] * (index[0:4].values))
+    return sum
+
+
+def funcX(inputIndex):
+    return numpy.dot(W_VAL , getXArray(inputIndex)) + B_VAL
+
+def Efunc(inputIndex):
+   return funcX(inputIndex) - getY(inputIndex)
+
+def ClampAlphaToConstraints(inFloat):
+    return max(0,min(UPPER_LIMIT_C,inFloat))
+
+
+
+
+
+def UpdateAlphaJ(indexI, indexJ):
+    alphaIOld = alphaVector[indexI]
+    alphaJOld = alphaVector[indexJ]
+
+    H = min(UPPER_LIMIT_C, UPPER_LIMIT_C + alphaJOld - alphaIOld)
+    L = max(0,alphaJOld-alphaIOld)
+
+    if(getY(indexI) == getY(indexJ)):
+        L = min(0, alphaIOld + alphaJOld - UPPER_LIMIT_C)
+        H = min(UPPER_LIMIT_C, alphaIOld + alphaJOld)
+
+
+    myu = (2* numpy.dot(getXArray(indexI) , getXArray(indexJ)) - (numpy.dot(getXArray(indexI) , getXArray(indexI))) - (numpy.dot(getXArray(indexJ) , getXArray(indexJ))  )   )
+
+    alphaJNew = alphaJOld - ((getY(indexJ) * (Efunc(indexI) - Efunc(indexJ)))/ myu)
+
+    if(alphaJNew < L):
+        return L
+    elif(alphaJNew > H):
+        return H
     else:
-        currRowProb *= ( probSpamGivenWord(row[1], row[2])) / ( probSpamGivenWord(row[1],row[2]) +  probHamGivenWord(row[1],row[2]))
+        return alphaJNew
+
+#Need to pass and use both new and old alphaJ, alphaI values to update b, so need to pass in both as floats
+def UpdateAlphaI(indexI, indexJ,  alphaJNew):
+    return alphaVector[indexI] + (alphaVector[indexJ]-alphaJNew)*(getY(indexI)*getY(indexJ))
 
 
-file.write("Successful classification ratio:  " + str(float(hitCounter)/numTestingEmails) + "\n")
-file.write("Incorrect classification ratio:  " + str(float(missCounter)/numTestingEmails) + "\n")
+def UpdateB(indexI, indexJ, alphaINew, alphaJNew, oldB):
+    b1 = oldB - Efunc(indexI) - (getY(indexI) *   (  alphaINew - alphaVector[indexI]  )*(  numpy.dot(getXArray(indexI) , getXArray(indexI))  )  )   - (  getY(indexJ) * (  alphaJNew - alphaVector[indexJ])*(  numpy.dot(getXArray(indexI), getXArray(indexJ))  )  )
+    b2 = oldB - Efunc(indexJ) - (getY(indexI) *   (  alphaINew - alphaVector[indexI]  )*(  numpy.dot(getXArray(indexI), getXArray(indexJ))  )  )   - (  getY(indexJ) * (  alphaJNew - alphaVector[indexJ])*(  numpy.dot(getXArray(indexJ), getXArray(indexJ)  ))  )
+    
+    if(alphaINew > 0 and alphaINew < UPPER_LIMIT_C):
+        return b1
+    elif(alphaJNew >0 and alphaJNew < UPPER_LIMIT_C):
+        return b2
+    else:
+        return (b1+b2)/2.0
 
 
-file.close()    
+
+
+
+#main loop
+print("Loop start.\n")
+start = time.time()
+
+for counter in range(0,MAX_LOOPS):
+
+    W_VAL = UpdateWVal()
+
+    i = random.randint(0,trainingDataLength-1)
+    j = random.randint(0,trainingDataLength-1)
+    while(i==j):
+        j=random.randint(0,trainingDataLength-1)
+
+    alphaJNew = UpdateAlphaJ(i,j)
+    alphaINew = UpdateAlphaI(i,j,alphaJNew)
+    B_VAL = UpdateB(i,j,alphaINew,alphaJNew,B_VAL)
+
+    alphaVector[i] = alphaINew
+    alphaVector[j] = alphaJNew
+
+end = time.time()
+
+print("Loop end.  Elapsed time:  " + str(end-start) + "seconds.\n")
+
+averages = [0,0,0,0]
+for rows, index in trainingDataInput.iterrows():
+    if(rows >0):
+        for i in range(0,4):
+            averages[i] += index[i]
+
+
+for i in range(0,4):
+    averages[i] /= trainingDataLength
+
+
+xAxis =0
+yAxis=1
+
+plt.xlabel(columnNames[xAxis])
+plt.ylabel(columnNames[yAxis])
+
+
+plt.plot(trainingDataInput[columnNames[xAxis]], trainingDataInput[columnNames[yAxis]])
+
+#Make line based off of testing data, draw that line?
+
+
+
+
+#graph stuff goes here
