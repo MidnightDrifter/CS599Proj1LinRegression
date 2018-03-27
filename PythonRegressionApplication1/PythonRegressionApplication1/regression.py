@@ -199,8 +199,9 @@ plt.ylabel(columnNames[yAxis])
 plt.plot(trainingDataInput[columnNames[xAxis]], trainingDataInput[columnNames[yAxis]])
 
 #Make line based off of testing data, draw that line?
+W_VAL = UpdateWVal()
 
-
-
+for row, index in trainingDataInput.iterrows():
+    #If f(x) > 0, draw in RED, else draw in BLUE
 
 #graph stuff goes here
