@@ -124,7 +124,8 @@ def UpdateAlphaJ(indexI, indexJ):
 
 
     myu = (2* numpy.dot(getXArray(indexI) , getXArray(indexJ)) - (numpy.dot(getXArray(indexI) , getXArray(indexI))) - (numpy.dot(getXArray(indexJ) , getXArray(indexJ))  )   )
-
+    if (myu==0):
+        myu=1
     alphaJNew = alphaJOld - ((getY(indexJ) * (Efunc(indexI) - Efunc(indexJ)))/ myu)
 
     if(alphaJNew < L):
@@ -196,12 +197,21 @@ plt.xlabel(columnNames[xAxis])
 plt.ylabel(columnNames[yAxis])
 
 
-plt.plot(trainingDataInput[columnNames[xAxis]], trainingDataInput[columnNames[yAxis]])
+#plt.plot(trainingDataInput[columnNames[xAxis]], trainingDataInput[columnNames[yAxis]])
 
 #Make line based off of testing data, draw that line?
 W_VAL = UpdateWVal()
 
 for row, index in trainingDataInput.iterrows():
     #If f(x) > 0, draw in RED, else draw in BLUE
+    if(rows >0):
+        if( (numpy.dot(W_VAL, getXArray(row)) + B_VAL) >=0):
+            plt.scatter(index[xAxis],index[yAxis], color='r')
+        else:
+            plt.scatter(index[xAxis],index[yAxis], color='b')
+
+
 
 #graph stuff goes here
+
+plt.show()
