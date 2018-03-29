@@ -201,14 +201,27 @@ plt.ylabel(columnNames[yAxis])
 
 #Make line based off of testing data, draw that line?
 W_VAL = UpdateWVal()
-
+correctClassifications =0
 for row, index in trainingDataInput.iterrows():
     #If f(x) > 0, draw in RED, else draw in BLUE
     if(rows >0):
-        if( (numpy.dot(W_VAL, getXArray(row)) + B_VAL) >=0):
+        classification = numpy.dot(W_VAL, getXArray(row)) + B_VAL
+        if( classification >=0):
             plt.scatter(index[xAxis],index[yAxis], color='r')
+            if(getY(row) ==1):
+                correctClassifications += 1
         else:
             plt.scatter(index[xAxis],index[yAxis], color='b')
+            if(getY(row)==-1):
+                correctClassifications += 1
+
+
+
+
+print("Correct classification ratio:  " + str(correctClassifications/100.0) + ".\n")
+           
+
+
 
 
 
