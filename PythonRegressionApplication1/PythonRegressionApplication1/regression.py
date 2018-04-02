@@ -68,7 +68,7 @@ W_VAL = pandas.DataFrame(trainingDataInput.iloc[[1],[0,1,2,3]]).values   #Slicin
 W_VAL = W_VAL - W_VAL
 B_VAL = 0.0
 
-MAX_LOOPS = 1000
+MAX_LOOPS = 2
 
 #use len-1 because, presumably, the header row is included in the length
 alphaVector = [initialAlphaValue] * (trainingDataLength)   
