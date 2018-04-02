@@ -64,10 +64,12 @@ NUM_CLUSTERS = 2
 phiArray = [1.0/NUM_CLUSTERS] * NUM_CLUSTERS
 
 #If this doesn't work, just store them in separate arrays for sanity's sake
+clusterSizes = [125] * NUM_CLUSTERS  #Initial cluster size = 125
 clusterCentersX = [0.0] * NUM_CLUSTERS   #Vi x-coord
 clusterCentersY = [0.0] * NUM_CLUSTERS   #Vi y-coord
 dataPointClusterAssignment = [0] * NUM_CLUSTERS   #Set the first 125 to 1st cluster (index 0), last 125 to 2nd cluster (index 1)
 sigmaVals = [1]*NUM_CLUSTERS
+WVals = [1]*NUM_CLUSTERS  #Wij values
 #Parameters I Choose
 
 #Set cluster centers--avg of first, second 125 inputs
@@ -82,8 +84,24 @@ for row, index in trainingDataInput.iterrows():
             clusterCentersY[1] += index[2]   #.values
             dataPointClustersAssignment[row] =1
 
-for i in range(0,NUM_CLUSTERS):
-    clusterCenters[i] = tuple(x / 125.0 for x in clusterCenters[i])
+
+
+def UpdateClusterCenters():
+    for i in range(0,NUM_CLUSTERS):
+        clusterCentersX[i] = tuple(x / float(clusterSizes[i]) for x in clusterCentersX[i])
+        clusterCentersY[i] = tuple(x / float(clusterSizes[i]) for x in clusterCentersY[i])
+
+
+def GetXVal(i):
+    return trainingDataInput.iloc[[i][1]]
+
+def GetYVal(i):
+    return trainingDataInput.iloc[[i][2]]
+
+
+
+
+UpdateClusterCenters()
 
 
 
