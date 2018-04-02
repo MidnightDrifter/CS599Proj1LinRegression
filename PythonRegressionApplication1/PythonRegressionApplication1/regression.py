@@ -63,5 +63,28 @@ NUM_CLUSTERS = 2
 
 phiArray = [1.0/NUM_CLUSTERS] * NUM_CLUSTERS
 
-
+#If this doesn't work, just store them in separate arrays for sanity's sake
+clusterCentersX = [0.0] * NUM_CLUSTERS   #Vi x-coord
+clusterCentersY = [0.0] * NUM_CLUSTERS   #Vi y-coord
+dataPointClusterAssignment = [0] * NUM_CLUSTERS   #Set the first 125 to 1st cluster (index 0), last 125 to 2nd cluster (index 1)
+sigmaVals = [1]*NUM_CLUSTERS
 #Parameters I Choose
+
+#Set cluster centers--avg of first, second 125 inputs
+
+for row, index in trainingDataInput.iterrows():
+    if(rows >0):
+        if(rows <126):
+            clusterCentersX[0] += index[1]   #.values
+            clusterCentersY[0] += index[2]   #.values
+        else:
+            clusterCentersX[1] += index[2]   #.values
+            clusterCentersY[1] += index[2]   #.values
+            dataPointClustersAssignment[row] =1
+
+for i in range(0,NUM_CLUSTERS):
+    clusterCenters[i] = tuple(x / 125.0 for x in clusterCenters[i])
+
+
+
+
