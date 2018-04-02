@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import pandas
 import random
 import time
+import math
 
 
 #Filepaths for data files
@@ -56,7 +57,11 @@ testingDataLength = len(testingDataInput.index)
 
 #if(trainingDataLength == 0 or testingDataLength ==0):
 #    print("Something has gone wrong.")
+E = math.e
+PI = math.pi
+NUM_CLUSTERS = 2
 
+phiArray = [1.0/NUM_CLUSTERS] * NUM_CLUSTERS
 
 
 #Parameters I Choose
