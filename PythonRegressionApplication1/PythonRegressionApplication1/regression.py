@@ -130,13 +130,13 @@ def GetYVal(i):
 
 # P(Xi | Zj)
 def MembershipGrade(trainingDataIndex, meanIndex, sigmaIndex):
-    return (1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex])) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  )
+    return ((1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex])) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  ))
 
 
 
 
 def UpdateWValues():
-    for(i in range(0,NUM_DATA_POINTS))):
+    for(i in range(0,NUM_DATA_POINTS)):
         for(j in range(0,NUM_CLUSTERS)):
             sum =0.0
             myGrade = MembershipGrade(i,j,j) * phiVals[j]
