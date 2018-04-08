@@ -83,6 +83,7 @@ WVals = numpy.ones((NUM_DATA_POINTS,  NUM_CLUSTERS))   #num rows, num cols  ==> 
 MAX_X_VAL = trainingDataInput["eruptions"].max()
 MIN_X_VAL = trainingDataInput["eruptions"].min()
 
+MAX_LOOPS = 1000
 
 meanVals[0] = random(MIN_X_VAL,MAX_X_VAL)
 
@@ -130,8 +131,7 @@ def GetYVal(i):
 
 # P(Xi | Zj)
 def MembershipGrade(trainingDataIndex, meanIndex, sigmaIndex):
-    return ( (1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex]) ) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  ))
-
+    return (  (1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex]) ) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  ) )
 
 
 
@@ -172,4 +172,14 @@ def UpdateSigmaValues():
         sigmaVals[j]=wProduct/wSum
 
 
+for(b in range(0,MAX_LOOPS)):
+    UpdateWValues()
+
+    
+    UpdatePhiValues()
+    UpdateMeanValues()
+    UpdateSigmaValues()
+
+
+#Should have normal distributions at this point--what do we do with them?
 
