@@ -172,7 +172,7 @@ def UpdateSigmaValues():
         sigmaVals[j]=wProduct/wSum
 
 
-for(b in range(0,MAX_LOOPS)):
+for b in range(0,MAX_LOOPS):
     UpdateWValues()
 
     
