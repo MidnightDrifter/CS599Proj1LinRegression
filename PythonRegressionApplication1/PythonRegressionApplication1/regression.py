@@ -130,50 +130,46 @@ def GetYVal(i):
 
 # P(Xi | Zj)
 def MembershipGrade(trainingDataIndex, meanIndex, sigmaIndex):
-    return ((1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex])) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  ))
+    return ( (1/(math.sqrt(2*PI)*sigmaVals[sigmaIndex]) ) * ( math.pow(E, (math.pow( ( GetXVal(trainingDataIndex) - meanVals[meanIndex]), 2  )) / ( -2 * math.pow(sigmaVals[sigmaIndex],2) )  )  ))
 
 
 
 
 def UpdateWValues():
-    for(i in range(0,NUM_DATA_POINTS)):
-        for(j in range(0,NUM_CLUSTERS)):
+    for i in range(0,NUM_DATA_POINTS):
+        for j in range(0,NUM_CLUSTERS):
             sum =0.0
             myGrade = MembershipGrade(i,j,j) * phiVals[j]
-            for(l in range(0,NUM_DATA_POINTS)):
+            for l in range(0,NUM_DATA_POINTS):
                 sum += MembershipGrade(i,l,l) * phiVals[l]
             WVals[i][j] = myGrade/sum
 
 
 def UpdateMeanValues():
-    for(j in range(0,NUM_CLUSTERS)):
+    for j in range(0,NUM_CLUSTERS):
         wSum =0.0
         wProduct =0.0
-        for(i in range(0,NUM_DATA_POINTS)):
+        for i in range(0,NUM_DATA_POINTS):
             wSum += WVals[i][j]
             wProduct += WVals[i][j] * GetXVal(i)
         meanVals[j] = wSum / wProduct
 
 def UpdatePhiValues():
-    for(j in range(0,NUM_CLUSTERS)):
+    for j in range(0,NUM_CLUSTERS):
         wSum =0.0
-        for(i in range(0,NUM_DATA_POINTS)):
+        for i in range(0,NUM_DATA_POINTS):
             wSum += WVals[i][j]
         phiVals[j] = wSum / NUM_DATA_POINTS
 
 
 def UpdateSigmaValues():
-    for(j in range(0,NUM_CLUSTERS)):
+    for j in range(0,NUM_CLUSTERS):
         wSum=0.0
         wProduct=0.0
-        for(i in range(0,NUM_DATA_POINTS)):
+        for i in range(0,NUM_DATA_POINTS):
             wSum += WVals[i][j]
             wProduct += WVals[i][j] * math.pow((GetXVal(i) - meanVals[j]), 2)
         sigmaVals[j]=wProduct/wSum
-
-
-
-
 
 
 
