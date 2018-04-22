@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas
@@ -65,3 +65,59 @@ testingDataLength = len(testingDataInput.index)
 
 
 #Division:   x, y, x/y   where x & y are in [1, 10], equidistant  (???)
+
+
+#Input:  2 inputs
+#Output: 1 output
+
+
+#
+#   Weight matrices:
+#   M x 2 matrix of weights, M = # nodes in layer 1
+#   
+#   For each layer after:   M x N matrix,  N = # nodes in layer L+1, M = # nodes in layer L
+#   
+#   Final layer:   N x 1 vector, N = # nodes in second to last layer   
+#
+#   
+#   Node inputs:  Zk vals, just plug into phi() fn. to get Ok vals -- same number of partial derivatives, too!
+#      
+#   For all layers:  sum of( weight from this node -> output of node from previous layer *  output of node from previous layer  )
+#
+#   First layer:   2x1 vector  (x1, x2)
+#   Each layer thereafter:   M x 1 vector  M = # nodes in prev. layer
+#
+#   x1 =>
+#
+#   x2
+#
+#
+#
+
+
+
+NUM_HIDDEN_LAYERS = 2
+NUM_NODES_PER_HIDDEN_LAYER =2
+
+
+def sigmoid(x):
+    return (1 / (1 + math.pow(math.e,x)))
+
+def sigmoidDerivative(x):
+    return (sigmoid(x)) * (1 - (sigmoid(x)))
+
+
+
+
+
+
+
+testInputs = [np.matrix(0,0), np.matrix(0,1), np.matrix(1,0), np.matrix(1,1)]
+
+#change to THIS for division
+#testInputs = [np.matrix(), np.matrix(), np.matrix(), np.matrix() ]
+
+
+for i in range(0,NUM_HIDDEN_LAYERS):
+    for j in range(0,NUM_NODES_PER_HIDDEN_LAYER):
+
