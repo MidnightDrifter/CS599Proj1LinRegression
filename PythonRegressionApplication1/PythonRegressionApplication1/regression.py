@@ -97,6 +97,7 @@ testingDataLength = len(testingDataInput.index)
 
 
 NUM_HIDDEN_LAYERS = 2
+NUM_LAYERS = NUM_HIDDEN_LAYERS+2
 NUM_NODES_PER_HIDDEN_LAYER =2
 
 
@@ -106,6 +107,14 @@ def sigmoid(x):
 def sigmoidDerivative(x):
     return (sigmoid(x)) * (1 - (sigmoid(x)))
 
+
+
+biasMatrix = np.empty((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER))   #Store biases
+biasPartialDerivativesMatrix = np.ones((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER)) #Stores partial derivatives 
+nodeMatrix = np.zeroes((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER))    #Store Zk vals
+
+weightsMatrixList = []  #Stores weights
+weightsPartialDerivativesMatrixList = []  #Stores weight partial derivatives
 
 
 
@@ -118,6 +127,16 @@ testInputs = [np.matrix(0,0), np.matrix(0,1), np.matrix(1,0), np.matrix(1,1)]
 #testInputs = [np.matrix(), np.matrix(), np.matrix(), np.matrix() ]
 
 
-for i in range(0,NUM_HIDDEN_LAYERS):
-    for j in range(0,NUM_NODES_PER_HIDDEN_LAYER):
+for i in range(0,NUM_LAYERS):
+    if (i==0):
+        weightsMatrixList.append(np.empty(2,NUM_NODES_PER_HIDDEN_LAYER))  #From layer j->i    second coord -> first coord    ???
+    elif (i==NUM_LAYERS-1):
+        weightsMatrixList.append(np.empty(NUM_NODES_PER_HIDDEN_LAYER,1))
+    else:
+        weightsMatrixList.append(np.empty(NUM_NODES_PER_HIDDEN_LAYER,NUM_NODES_PER_HIDDEN_LAYER))
 
+
+
+#Just need to look up how to update the partial derivatives, make functions out of them, ???, profit?
+
+        
