@@ -111,14 +111,17 @@ def sigmoidDerivative(x):
 
 biasMatrix = np.empty((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER))   #Store biases
 biasPartialDerivativesMatrix = np.ones((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER)) #Stores partial derivatives 
+
 nodeMatrix = np.zeroes((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER))    #Store Zk vals
+nodePartialDerivativesMatrix = np.ones((NUM_HIDDEN_LAYERS,NUM_NODES_PER_HIDDEN_LAYER))  #Store partial derivatives of node outputs-- Ok vals
 
 weightsMatrixList = []  #Stores weights
 weightsPartialDerivativesMatrixList = []  #Stores weight partial derivatives
 
 
 
-
+FINAL_OUTPUT = 1.0
+FINAL_OUTPUT_DERIVATIVE = 1.0
 
 
 testInputs = [np.matrix(0,0), np.matrix(0,1), np.matrix(1,0), np.matrix(1,1)]
@@ -140,3 +143,20 @@ for i in range(0,NUM_LAYERS):
 #Just need to look up how to update the partial derivatives, make functions out of them, ???, profit?
 
         
+def UpdateNodeOutputDerivatives(yKHat):
+    FINAL_OUTPUT_DERIVATIVE = FINAL_OUTPUT - yKHat
+    for i in range(NUM_HIDDEN_LAYERS,-1,-1):    #for each layer
+        
+        for j in range(0,NUM_NODES_PER_HIDDEN_LAYER,1):   # for each node in each layer
+            if(i==NUM_HIDDEN_LAYERS):  
+                nodePartialDerivativesMatrix[i][j] = FINAL_OUTPUT_DERIVATIVE * sigmoidDerivative(nodeMatrix[i][j] + biasMatrix[i][j])  * (weightsMatrixList[i])[j][0]
+            else:
+                sum=0.0
+                for k in range(0,NUM_NODES_PER_HIDDEN_LAYER,1):
+                    sum += nodePartialDerivativesMatrix[i+1][k] * sigmoidDerivative(nodeMatrix[i+1][k] + biasMatrix[i+1][k]) * (weightsMatrixList[i])[j][k]
+                nodePartialDerivativesMatrix[i][j] = sum
+
+
+    return
+
+
