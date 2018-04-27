@@ -149,7 +149,7 @@ def UpdateNodeOutputDerivatives(yKHat):
         
         for j in range(0,NUM_NODES_PER_HIDDEN_LAYER,1):   # for each node in each layer
             if(i==NUM_HIDDEN_LAYERS):  
-                nodePartialDerivativesMatrix[i][j] = FINAL_OUTPUT_DERIVATIVE * sigmoidDerivative(nodeMatrix[i][j] + biasMatrix[i][j])  * (weightsMatrixList[i])[j][0]
+                nodePartialDerivativesMatrix[i][j] = FINAL_OUTPUT_DERIVATIVE * sigmoidDerivative(FINAL_OUTPUT + biasMatrix[i][j])  * (weightsMatrixList[i])[j][0]
             else:
                 sum=0.0
                 for k in range(0,NUM_NODES_PER_HIDDEN_LAYER,1):
@@ -160,3 +160,25 @@ def UpdateNodeOutputDerivatives(yKHat):
     return
 
 
+def UpdateBiasPartialDerivatives():
+    for i in range(NUM_HIDDEN_LAYERS,-1,-1):
+        for j in range(0,NUM_NODES_PER_HIDDEN_LAYER):
+            if(i==NUM_HIDDEN_LAYERS):
+                biasPartialDerivativesMatrix = FINAL_OUTPUT_DERIVATIVE * sigmoidDerivative(FINAL_OUTPUT + biasMatrix[i+1][j])
+            else:
+                biasPartialDerivativesMatrix = sigmoidDerivative(nodeMatrix[i+1][j]) * nodePartialDerivativesMatrix[i+1][j]
+
+    return
+
+
+def UpdateWeightPartialDerivatives():
+    for i in range(NUM_LAYERS,-1,-1):  #Do this for EVERY layer now, instead of just hidden layers
+        for j in range(0,NUM_NODES_PER_HIDDEN_LAYER):
+            for k in range(0,NUM_NODES_PER_HIDDEN_LAYER):
+
+                if(i==NUM_LAYERS):
+                    (weightsPartialDerivativesMatrixList[i])[j][k] = FINAL_OUTPUT_DERIVATIVE * sigmoidDerivative(FINAL_OUTPUT + biasMatrix[j+1][k]) * sigmoid(nodeMatrix[j][k] + biasMatrix[j][k])
+                else:
+                    (weightsPartialDerivativesMatrixList[i])[j][k] = nodePartialDerivativesMatrix[j+1][k] * sigmoidDerivative(nodeMatrix[j+1][k] + biasMatrix[j+1][k]) * sigmoid(nodeMatrix[j][k] + biasMatrix[j][k])
+
+    return
