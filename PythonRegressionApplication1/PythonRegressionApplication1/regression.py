@@ -52,8 +52,8 @@ trainingDataInput = pandas.DataFrame(pandas.read_csv(trainingDataCSVPath))
 trainingDataLength = 0
 testingDataLength = 0
 
-trainingDataLength = len(trainingDataInput.index)
-testingDataLength = len(testingDataInput.index)
+#trainingDataLength = len(trainingDataInput.index)
+#testingDataLength = len(testingDataInput.index)
 
 #Input matrix - 4x3
 
